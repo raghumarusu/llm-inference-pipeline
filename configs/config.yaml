@@ -1,0 +1,12 @@
+vector_db:
+  host: "localhost"
+  port: 6333
+  collection_name: "llm_embeddings"
+
+gpt_model:
+  model_name: "gpt2"
+  max_length: 100
+
+logging:
+  level: "INFO"
+

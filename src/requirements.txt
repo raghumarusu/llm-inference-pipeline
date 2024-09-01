@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+transformers
+torch
+qdrant-client
+pandas
+numpy
+scikit-learn
+
