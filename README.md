@@ -1,5 +1,6 @@
 # LLM Production Template
 
+<<<<<<< HEAD
 This is a reusable template for deploying Large Language Models (LLMs) in production environments using Python, FastAPI, and Qdrant for vector database operations.
 
 ## Features
@@ -27,4 +28,7 @@ This is a reusable template for deploying Large Language Models (LLMs) in produc
    cd llm-production-template
 # LLM Production Template
 
-A standardized, reusable template for deploying Large Language Models (LLMs) in production environments using Python.
+
+=======
+
+>>>>>>> b1575a6aed2482dbf317735bd23d199a0adab52c
