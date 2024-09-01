@@ -1,0 +1,48 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - 'v*.*.*-dev'
+      - 'v*.*.*-test'
+      - 'v*.*.*-stage'
+      - 'v*.*.*-prod'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # This runner builds the Docker image; compatible with CentOS
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Build Docker image
+      run: |
+        docker build -t llm-inference-pipeline:${GITHUB_REF#refs/tags/} .
+
+    - name: Determine environment
+      id: env
+      run: |
+        if [[ "${GITHUB_REF#refs/tags/}" == *"-dev" ]]; then
+          echo "ENV=dev" >> $GITHUB_ENV
+          echo "HOST=dev.centos.yourdomain.com" >> $GITHUB_ENV
+        elif [[ "${GITHUB_REF#refs/tags/}" == *"-test" ]]; then
+          echo "ENV=test" >> $GITHUB_ENV
+          echo "HOST=test.centos.yourdomain.com" >> $GITHUB_ENV
+        elif [[ "${GITHUB_REF#refs/tags/}" == *"-stage" ]]; then
+          echo "ENV=stage" >> $GITHUB_ENV
+          echo "HOST=stage.centos.yourdomain.com" >> $GITHUB_ENV
+        elif [[ "${GITHUB_REF#refs/tags/}" == *"-prod" ]]; then
+          echo "ENV=prod" >> $GITHUB_ENV
+          echo "HOST=prod.centos.yourdomain.com" >> $GITHUB_ENV
+        fi
+
+    - name: Deploy to ${GITHUB_ENV_ENV} environment
+      run: |
+        echo "Deploying to $ENV environment at $HOST"
+        ssh user@$HOST "docker run -d -e ENV=$ENV -p 8000:8000 llm-inference-pipeline:${GITHUB_REF#refs/tags/}"
+
